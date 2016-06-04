@@ -1,0 +1,25 @@
+{# standard template wrapper #}
+<html>
+<head>
+  {% if title %}
+  <title>{{title}}</title>
+  {% endif %}
+  
+  <!-- import our own master css -->
+  <link rel="stylesheet" href="{{ url_for('static',filename='css/main.css') }}" type="text/css" />
+
+  {# block for extra imports #}
+  {% block imports %}
+  {% endblock %}
+  
+  {# block to insert into header #}
+  {% block header %}
+  {% endblock %}
+
+</head>
+<body>
+  {# main content block #}
+  {% block content %}
+  {% endblock %}
+</body>
+</html>
