@@ -1,0 +1,10 @@
+#!/bin/sh
+
+echo "source Configuration"
+source ../Configuration
+
+echo "rebuild Schema from SQLAlchemy models"
+./buildSchema
+
+echo "migrate all WTS data from localhost:export to localhost:pwts"
+./migrateWTS.py localhost export localhost pwts

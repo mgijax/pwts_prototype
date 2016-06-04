@@ -49,6 +49,8 @@ class TrackRec(db.Model):
     
     requestedBy = db.relationship("TR_RequestedUser")
     
+    statusChanges = db.relationship("StatusHistory")
+    
     
 
 class TR_Area(db.Model):
@@ -103,12 +105,24 @@ class StatusHistory(db.Model):
     tr_key = db.Column(db.Integer, 
                        db.ForeignKey("wts_trackrec.key"),
                        index=True)
+    status_key = db.Column(db.Integer, 
+                         db.ForeignKey("cv_wts_status.key"),
+                         index=True)
     user_key = db.Column(db.Integer, 
                          db.ForeignKey("cv_user.key"),
                          index=True)
     set_date = db.Column(db.DateTime())
     
     
-    
+class WTSRelationship(db.Model):
+    __tablename__ = "wts_relationship"
+    tr_key = db.Column(db.Integer, 
+                   db.ForeignKey("wts_trackrec.key"),
+                   primary_key=True)
+    related_tr_key = db.Column(db.Integer, 
+                   db.ForeignKey("wts_trackrec.key"),
+                   primary_key=True)
+
+    transitive_closure = db.Column(db.Boolean, primary_key=True)
     
         

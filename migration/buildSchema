@@ -1,4 +1,10 @@
 #!/usr/bin/env python
+"""
+Create pwts schema
+
+NOTE: must source ../Configuration before use
+"""
+
 import sys,os.path
 # adjust the path for running the tests locally, so that it can find app (i.e. 1 dirs up)
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
