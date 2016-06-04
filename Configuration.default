@@ -1,0 +1,59 @@
+#!/bin/bash
+
+# if MGICONFIG is not set, then set it
+# you can override MGICONFIG later, if need be
+if [ "${MGICONFIG}" = "" ]
+then
+    MGICONFIG=/user/local/mgi/live/mgiconfig
+    export MGICONFIG
+    source ${MGICONFIG}/master.config.sh
+fi
+
+# needs to be the directory of this project
+PWTS=${MGI_LIVE}/pwts_prototype
+export PWTS
+
+# setup the mgipython environment
+MGIPYTHONLIB=${MGI_LIVE}/mgipython
+source $MGIPYTHONLIB/Configuration
+source $MGIPYTHONLIB/bin/activate
+
+LOG_DIR=$PWTS/logs
+export LOG_DIR
+
+# set to dev.config.py for development
+APP_CONFIG_FILE=$PWTS/config/dev.config.py
+export APP_CONFIG_FILE
+
+SERVER_PORT=5020
+export SERVER_PORT
+DEV_SERVER_PORT=7020
+export DEV_SERVER_PORT
+
+APP_PREFIX="/pwts"
+export APP_PREFIX
+
+# default database values
+PG_SERVER=${MGD_DBSERVER}
+PG_DBNAME=${MGD_DBNAME}
+PG_USER=${MGD_DBUSER}
+if [ ${MGD_DBPASSWORDFILE} ]
+then
+    PG_PASS=`cat ${MGD_DBPASSWORDFILE}`
+else
+    echo "Missing MGD_DBPASSWORDFILE -- Set environment, or configure manually"
+    exit 1
+fi
+# Optionally Override MGICONFIG
+#PG_SERVER=mgi-testdb4.jax.org
+#PG_DBNAME=pub_dev
+#PG_USER=dbo user
+#PG_PASS=dev password
+export PG_SERVER
+export PG_DBNAME
+export PG_USER
+export PG_PASS
+
+# disable dev server debugger PIN
+WERKZEUG_DEBUG_PIN=off
+export WERKZEUG_DEBUG_PIN
