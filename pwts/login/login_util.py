@@ -6,10 +6,10 @@
         (User must still exist in MGI_User table)
         
 """
-from flask import session
-from pwts import app
 import logging
 import os
+from flask import session
+#from pwts import app
 
 
 # TODO (kstone): implement logins

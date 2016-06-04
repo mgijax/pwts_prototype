@@ -1,9 +1,21 @@
-from flask import Flask, request, session, g, redirect, url_for, \
-     abort, render_template, flash, make_response
-from flask.ext.sqlalchemy import SQLAlchemy
-
+"""
+    PWTS app configuration
+"""
+# pylint: disable=invalid-name
+# pylint: disable=wrong-import-position
 import os
 import logging
+from logging.handlers import TimedRotatingFileHandler
+import flask
+from flask import Flask, request, session, g, redirect, url_for, \
+     abort, render_template, flash, make_response
+import jinja2
+from flask.ext.sqlalchemy import SQLAlchemy
+import flask_login
+from flask.ext.login import LoginManager, current_user
+from pwts.login import login_util
+# from mgipython.model.mgd.mgi import MGIUser
+
 
 # configuration from environment
 PG_SERVER = os.environ["PG_SERVER"]
@@ -16,7 +28,7 @@ APP_PREFIX = os.environ["APP_PREFIX"]
 LOG_DIR = os.environ["LOG_DIR"]
 
 # application object
-app = Flask(__name__,static_path="%s/static"%APP_PREFIX)
+app = Flask(__name__, static_path="%s/static"%APP_PREFIX)
 
 # set all constants defined above this line to the app.config object
 app.config.from_object(__name__)
@@ -29,13 +41,12 @@ APP_PREFIX = app.config['APP_PREFIX']
 
 # open up global logger so we can fine tune the individual handlers
 app.logger.setLevel(logging.DEBUG)
-    
+
 
 # configure logging when not in debug mode
 if 'WRITE_APP_LOG' in app.config and app.config['WRITE_APP_LOG']:
     
     # make a file logger that rotates every day
-    from logging.handlers import TimedRotatingFileHandler
     file_handler = TimedRotatingFileHandler(os.path.join(LOG_DIR, "app.log"),
                                 when='D',
                                 interval=1,
@@ -61,17 +72,17 @@ if 'WRITE_APP_LOG' in app.config and app.config['WRITE_APP_LOG']:
     file_handler.setFormatter(formatter)
     app.logger.addHandler(file_handler)
     
-    from flask import request
     @app.before_request
     def log_requests():
+        """
+        Log only access requests
+        """
         app.logger.info("ACCESS - \"%s\"" % request.path)
         
         
 # testing postgres dburi
-dburi = "postgresql+psycopg2://%s:%s@%s/%s"%(PG_USER,PG_PASS,
-	PG_SERVER,PG_DBNAME)
-
-print dburi
+dburi = "postgresql+psycopg2://%s:%s@%s/%s"%(PG_USER, PG_PASS,
+	PG_SERVER, PG_DBNAME)
 
 # configure the multiple db binds
 # 'mgd' is for mgd 
@@ -81,6 +92,7 @@ app.config['SQLALCHEMY_BINDS'] = {
 }
 
 # initialise the global db object
+#pylint: disable=wrong-import-order
 from mgipython import modelconfig
 modelconfig.createDatabaseEngineFromApp(app)
 db = modelconfig.db
@@ -92,8 +104,11 @@ app.secret_key = 'ThisIsASecretKey;-)'
 # prepare the db connections for all requests
 @app.before_request
 def before_request():
+    """
+    initialize session before requests
+    """
     if 'user' not in session:
-		session['user'] = ''
+        session['user'] = ''
         
     # prevent any database session autoflush
     db.session.autoflush = False
@@ -102,6 +117,9 @@ def before_request():
 
 @app.teardown_appcontext
 def shutdown_session(exception=None):
+    """
+    clean up db connection after requests
+    """
     #db.session.rollback()
     db.session.expunge_all()
     db.session.close()
@@ -118,35 +136,12 @@ def shutdown_session(exception=None):
 
 # views
 #from forms import *
-from login import login_util
-import flask_login
-from flask.ext.login import LoginManager, current_user
-# from mgipython.model.mgd.mgi import MGIUser
-import flask
+
 
 # create the login manager
 login_manager = LoginManager()
 login_manager.init_app(app)
 
-
-# prepare the db connections for all requests
-@app.before_request
-def before_request():
-    
-#     if current_user and current_user.is_authenticated:
-#         session['user'] = current_user.login
-#         session['authenticated'] = True
-#     
-#     if 'user' not in session:
-#         session['user'] = ''
-#     if 'authenticated' not in session:
-#         session['authenticated'] = False
-#         
-#     if session['user']:
-#         login_util.refreshLogin(session['user'])
-        
-    # prevent any database session autoflush
-    db.session.autoflush = False
 
 # @login_manager.user_loader
 # def load_user(userid):
@@ -155,6 +150,9 @@ def before_request():
 # root view
 @app.route(APP_PREFIX+'/')
 def index():
+    """
+    Index page
+    """
     return render_template('index.html')
 
     
@@ -220,6 +218,10 @@ def index():
 
 #register blueprints
 def registerBlueprint(bp):
+    """
+    Add APP_PREFIX to all blueprints
+       so we can use relative names in the code
+    """
     url_prefix = APP_PREFIX + bp.url_prefix
     app.register_blueprint(bp, url_prefix=url_prefix)
                            
@@ -228,10 +230,9 @@ def registerBlueprint(bp):
 # registerBlueprint(detailBlueprint)
 
 # need to turn off autoescaping to allow nested templates inside templatetags
-app.jinja_env.autoescape=False
+app.jinja_env.autoescape = False
 
 # enable any jinja extensions
-import jinja2
 # with syntax for template includes
 app.jinja_env.add_extension(jinja2.ext.with_)
 
@@ -242,5 +243,6 @@ app.jinja_env.add_extension(jinja2.ext.with_)
 db.session.close()
 
 if __name__ == '__main__':
-	app.debug = DEBUG
-	app.run(host='mgi-testdb4')
+    app.debug = "DEBUG" in os.environ
+    app.run(host='mgi-testdb4')
+    

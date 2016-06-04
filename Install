@@ -4,3 +4,7 @@ source ./Configuration
 printf "\nCreating log directory\n"
 mkdir -p $LOG_DIR
 
+
+printf "\nEnsuring pylint is installed\n"
+easy_install pylint
+easy_install --always-unzip pylint_flask

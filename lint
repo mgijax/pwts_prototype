@@ -1,0 +1,5 @@
+#!/bin/sh
+echo "Running pylint to check for code issues"
+
+source Configuration
+pylint pwts

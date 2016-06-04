@@ -1,11 +1,13 @@
 """
 Core WTS tables
 """
+# pylint: disable=missing-docstring
+# pylint: disable=too-few-public-methods
 from mgipython.modelconfig import db
-from cv import *
+#from pwts.model.cv import *
 
 class TrackRec(db.Model):
-    __tablename__="wts_trackrec"
+    __tablename__ = "wts_trackrec"
     key = db.Column(db.Integer, primary_key=True)
     priority_key = db.Column(db.Integer, db.ForeignKey("cv_wts_priority.key"))
     size_key = db.Column(db.Integer, 
@@ -39,22 +41,22 @@ class TrackRec(db.Model):
                              uselist=False,
                              backref="trs")
     
-    areas = db.relationship("TR_Area",
+    areas = db.relationship("TRArea",
                             backref="trs")
     
-    types = db.relationship("TR_Type",
+    types = db.relationship("TRType",
                             backref="trs")
     
-    assignedUsers = db.relationship("TR_AssignedUser")
+    assignedUsers = db.relationship("TRAssignedUser")
     
-    requestedBy = db.relationship("TR_RequestedUser")
+    requestedBy = db.relationship("TRRequestedUser")
     
     statusChanges = db.relationship("StatusHistory")
     
     
 
-class TR_Area(db.Model):
-    __tablename__="wts_tr_area"
+class TRArea(db.Model):
+    __tablename__ = "wts_tr_area"
     tr_key = db.Column(db.Integer, 
                         db.ForeignKey("wts_trackrec.key"),
                         index=True,
@@ -64,8 +66,8 @@ class TR_Area(db.Model):
                         index=True,
                         primary_key=True)
         
-class TR_Type(db.Model):
-    __tablename__="wts_tr_type"
+class TRType(db.Model):
+    __tablename__ = "wts_tr_type"
     tr_key = db.Column(db.Integer, 
                         db.ForeignKey("wts_trackrec.key"),
                         index=True,
@@ -75,8 +77,8 @@ class TR_Type(db.Model):
                         index=True,
                         primary_key=True)
     
-class TR_AssignedUser(db.Model):
-    __tablename__="wts_tr_assign_user"
+class TRAssignedUser(db.Model):
+    __tablename__ = "wts_tr_assign_user"
     tr_key = db.Column(db.Integer, 
                         db.ForeignKey("wts_trackrec.key"),
                         index=True,
@@ -86,8 +88,8 @@ class TR_AssignedUser(db.Model):
                         index=True,
                         primary_key=True)
     
-class TR_RequestedUser(db.Model):
-    __tablename__="wts_tr_request_user"
+class TRRequestedUser(db.Model):
+    __tablename__ = "wts_tr_request_user"
     tr_key = db.Column(db.Integer, 
                         db.ForeignKey("wts_trackrec.key"),
                         index=True,
@@ -100,7 +102,7 @@ class TR_RequestedUser(db.Model):
         
 
 class StatusHistory(db.Model):
-    __tablename__="wts_status_history"
+    __tablename__ = "wts_status_history"
     key = db.Column(db.Integer, primary_key=True)
     tr_key = db.Column(db.Integer, 
                        db.ForeignKey("wts_trackrec.key"),

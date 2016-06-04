@@ -4,6 +4,13 @@ Prototype of a potential new WTS
 ## Dependencies
 * mgipython
 
+## Code Style
+This project checks python code style with pylint.
+
+* It is recommended to run ./lint frequently during development, and especially before submitting code.
+ * pylint will display errors, warnings, suggestions, and fixme comments. 
+ * Not all warnings are fixable, but a best effort attempt should be made.
+
 ## Goals
 1. To prototype a replacement for WTS with Scrum-related features
 2. MVC architecture with client run only off web services
