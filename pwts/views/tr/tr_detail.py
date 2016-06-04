@@ -62,7 +62,9 @@ def render_tr_json(trackrec):
         "has_directory": trackrec.has_directory,
         "attention_by": fmt_date(trackrec.attention_by),
         "creation_date": fmt_date(trackrec.creation_date),
-        "modification_date": fmt_date(trackrec.modification_date)
+        "modification_date": fmt_date(trackrec.modification_date),
+        
+        "child_trs": ",".join([str(x.key) for x in trackrec.child_trs])
     }
     
     

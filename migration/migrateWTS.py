@@ -308,18 +308,12 @@ def migrate_assocs(sourceCur, targCur, _tr_key=None):
      
             sourceCur.execute("""
               select _tr_key,
-               _related_tr_key,
-               transitive_closure
+               _related_tr_key
               from wts_relationship
+              where transitive_closure = 0
             """)
-            
-            rows = []
-            for row in sourceCur.fetchall():
-                    row = list(row)
-                    row[2] = bool(row[2])
-                    rows.append(row)
 
-            loadRecords(rows, "wts_relationship", targCur)
+            loadRecords(sourceCur.fetchall(), "wts_trackrec_child", targCur)
         
 
 def migrate_status_history(sourceCur, targCur, _tr_key=None):
