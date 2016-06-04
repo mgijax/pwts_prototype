@@ -11,8 +11,8 @@ from flask import Flask, request, session, g, redirect, url_for, \
      abort, render_template, flash, make_response
 import jinja2
 from flask.ext.sqlalchemy import SQLAlchemy
-import flask_login
-from flask.ext.login import LoginManager, current_user
+#import flask_login
+#from flask.ext.login import LoginManager, current_user
 from pwts.login import login_util
 # from mgipython.model.mgd.mgi import MGIUser
 
@@ -139,8 +139,8 @@ def shutdown_session(exception=None):
 
 
 # create the login manager
-login_manager = LoginManager()
-login_manager.init_app(app)
+#login_manager = LoginManager()
+#login_manager.init_app(app)
 
 
 # @login_manager.user_loader
@@ -225,9 +225,9 @@ def registerBlueprint(bp):
     url_prefix = APP_PREFIX + bp.url_prefix
     app.register_blueprint(bp, url_prefix=url_prefix)
                            
-# detail pages
-# from views.detail.blueprint import detail as detailBlueprint
-# registerBlueprint(detailBlueprint)
+# TR endpoints
+from pwts.views.tr.blueprint import blueprint as trBlueprint
+registerBlueprint(trBlueprint)
 
 # need to turn off autoescaping to allow nested templates inside templatetags
 app.jinja_env.autoescape = False

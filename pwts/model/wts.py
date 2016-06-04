@@ -37,6 +37,9 @@ class TrackRec(db.Model):
     priority = db.relationship("Priority",
                                uselist=False,
                                backref="trs")
+    size = db.relationship("Size",
+                             uselist=False,
+                             backref="trs")
     status = db.relationship("Status",
                              uselist=False,
                              backref="trs")
