@@ -35,7 +35,7 @@ export APP_PREFIX
 
 # default database values
 PG_SERVER=${MGD_DBSERVER}
-PG_DBNAME=${MGD_DBNAME}
+PG_DBNAME=wts
 PG_USER=${MGD_DBUSER}
 if [ ${MGD_DBPASSWORDFILE} ]
 then
