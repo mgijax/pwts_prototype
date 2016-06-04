@@ -71,6 +71,8 @@ if 'WRITE_APP_LOG' in app.config and app.config['WRITE_APP_LOG']:
 dburi = "postgresql+psycopg2://%s:%s@%s/%s"%(PG_USER,PG_PASS,
 	PG_SERVER,PG_DBNAME)
 
+print dburi
+
 # configure the multiple db binds
 # 'mgd' is for mgd 
 app.config['SQLALCHEMY_DATABASE_URI'] = dburi
