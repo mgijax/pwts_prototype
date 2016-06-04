@@ -23,7 +23,7 @@
 	
 	$.ajax({
 		dataType: "json",
-		url: "{{key}}/json"
+		url: "{{ url_for('api.get_tr', key=key) }}"
 	}).done(function(response){
 		$("#target").text("");
 		var ul = $("<ul>").appendTo("#target");

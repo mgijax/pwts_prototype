@@ -5,4 +5,4 @@ Blueprint for all 'tr' tracking record views
 from flask import Blueprint
 
 # Define the blueprint for all the views in this directory
-blueprint = Blueprint('tr', __name__, url_prefix='/tr')
+blueprint = Blueprint('client', __name__, url_prefix='/client')

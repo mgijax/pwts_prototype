@@ -225,9 +225,12 @@ def registerBlueprint(bp):
     url_prefix = APP_PREFIX + bp.url_prefix
     app.register_blueprint(bp, url_prefix=url_prefix)
                            
-# TR endpoints
-from pwts.views.tr.blueprint import blueprint as trBlueprint
-registerBlueprint(trBlueprint)
+# API and client blueprints
+from pwts.views.api.blueprint import blueprint as apiBlueprint
+registerBlueprint(apiBlueprint)
+
+from pwts.views.client.blueprint import blueprint as clientBlueprint
+registerBlueprint(clientBlueprint)
 
 # need to turn off autoescaping to allow nested templates inside templatetags
 app.jinja_env.autoescape = False
