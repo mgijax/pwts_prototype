@@ -2,13 +2,31 @@
     Displays TR detail information
 """
 import json
+from flask import render_template
 from pwts.views.tr.blueprint import blueprint
 from pwts.model.wts import TrackRec
 
 # Routes
-@blueprint.route('/detail/json/<int:key>')
-@blueprint.route('/detail/json/tr<int:key>')
-@blueprint.route('/detail/json/TR<int:key>')
+
+    
+
+@blueprint.route('/detail/<int:key>')
+@blueprint.route('/detail/tr<int:key>')
+@blueprint.route('/detail/TR<int:key>')
+def tr_detail(key):
+    """
+    TR detail HTML page
+    """
+    
+    return render_template("tr_detail.html",
+                title="TR%d Detail" % key,
+                key=key
+                )
+    
+    
+@blueprint.route('/detail/<int:key>/json')
+@blueprint.route('/detail/tr<int:key>/json')
+@blueprint.route('/detail/TR<int:key>/json')
 def tr_detail_json(key):
     """
     return JSON with TR details
@@ -18,7 +36,6 @@ def tr_detail_json(key):
         return render_tr_json(trackrec)
 
     return json.dumps({"error":"No TR exists with number %d" % key})
-    
     
 # Helpers
 

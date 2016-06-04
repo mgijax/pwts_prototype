@@ -1,0 +1,40 @@
+{% extends "standard.html" %}
+
+{% block header %}
+  <style>
+    pre {
+    	background-color: #efefef;
+    	display: inline-block;
+    	margin-top: 0px;
+    	vertical-align: top;
+    }
+  </style>
+{% endblock %}
+
+{% block content %}
+
+	<h1>Viewing TR{{key}}</h1>
+	
+	<div id="target">Loading TR Details...</div>
+	
+	<script>
+	
+	// DEBUG TR Details
+	
+	$.ajax({
+		dataType: "json",
+		url: "{{key}}/json"
+	}).done(function(response){
+		$("#target").text("");
+		var ul = $("<ul>").appendTo("#target");
+		
+		$.each(response, function(k, v){
+			 ul.append('<li><strong>'+k+'</strong> = <pre>'+v+'</pre></li>');
+		});
+		console.log(response);
+	}).fail(function(err){
+		$("#target").text(err);
+	});
+	
+	</script>
+{% endblock %}
