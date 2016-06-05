@@ -110,7 +110,7 @@ def before_request():
     if 'user' not in session:
         session['user'] = ''
         
-    if app.config["NO_DB_COMMIT"]:
+    if "NO_DB_COMMIT" in app.config and app.config["NO_DB_COMMIT"]:
         return
 
     # prevent any database session autoflush
@@ -125,7 +125,7 @@ def shutdown_session(exception=None):
     """
     #db.session.rollback()
     
-    if app.config["NO_DB_COMMIT"]:
+    if "NO_DB_COMMIT" in app.config and app.config["NO_DB_COMMIT"]:
         return
 
     db.session.commit()
@@ -248,6 +248,11 @@ app.jinja_env.add_extension(jinja2.ext.with_)
 
 # initialise any custom jinja global functions and filters
 # TODO(kstone): no filters yet
+
+
+# initialize admin interface
+from pwts import admin
+admin.initialize(app, db)
 
 #db.session.commit()
 db.session.close()
