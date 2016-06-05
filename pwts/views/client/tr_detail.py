@@ -7,7 +7,7 @@ from pwts.views.client.blueprint import blueprint
 # Routes
 
     
-
+@blueprint.route('/tr/', defaults={'key':''})
 @blueprint.route('/tr/<int:key>')
 @blueprint.route('/tr/tr<int:key>')
 @blueprint.route('/tr/TR<int:key>')

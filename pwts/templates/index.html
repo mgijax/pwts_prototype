@@ -37,11 +37,18 @@
     </li>
   </ul>
   
+  <br><hr>
+  
+  <ul>
+    <li>
+      <a href="{{ url_for('client.new_tr') }}">Create New TR</a> - Form for creating a new tracking record
+    </li>
+  </ul>
+  
   <script>
     (function(){
     	
-      var trDetailUrl = "{{ url_for('client.tr_detail', key=0) }}";
-      trDetailUrl = trDetailUrl.substring(0, trDetailUrl.length - 1);
+      var trDetailUrl = "{{ url_for('client.tr_detail') }}";
       
       // capture 'Find TR#' submit
       $('#trForm').submit(function(e){

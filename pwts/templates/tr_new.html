@@ -1,0 +1,82 @@
+{% extends "standard.html" %}
+
+{% block header %}
+  <style>
+    input, label {
+    	vertical-align: top;
+    }
+    form div {
+    	margin-bottom: 10px;
+    	display: inline-block;
+    	vertical-align: top;
+    }
+    label {
+        font-weight: bold;
+        display: inline-block;
+    }
+    label::after {
+        content: ":";
+        vertical-align: top;
+    }
+    
+    input[type="submit"], input[type="reset"] {
+    	font-size: 20px;
+    }
+    table, th {
+        border: 1px solid black;
+        border-collapse: collapse;
+    }
+    td {
+        padding: 2px;
+    }
+    tr:nth-child(even) {
+        background-color: #efefef;
+    }
+  </style>
+{% endblock %}
+
+{% block content %}
+
+    <section>
+      <h2>Create New TR</h2>
+      <form id="trForm">
+      
+      	<div><input type="submit" value="Save" /></div>
+      	
+      	<br><hr>
+        
+        <div>{{form.title.label}} {{form.title(size=80)}}</div>
+        
+        <br><hr>
+        
+        <div>{{form.priority.label}} {{form.priority(size=6)}}</div>
+        
+        <div>{{form.size.label}} {{form.size(size=6)}}</div>
+        
+        <div>{{form.status.label}} {{form.status(size=6)}}</div>
+        
+        <br><hr>
+        
+        <div>{{form.requested_by.label}} {{form.requested_by(size=10)}}</div>
+        
+        <div>{{form.assigned_user.label}} {{form.assigned_user(size=10)}}</div>
+        
+        <br><hr>
+        
+        <div><input type="submit" value="Save" /></div>
+      </form>
+    </section>
+    
+    <div id="message"></div>
+	
+	<!-- Set up for javascript -->
+	<script>
+	
+	  // url for REST calls
+	  window.TR_CREATE_URL = "{{ url_for('api.create_tr') }}";
+	  window.TR_DETAIL_URL = "{{ url_for('client.tr_detail') }}";
+	</script>
+	
+	
+	<script src="{{ url_for('static',filename='js/tr_new.js') }}"></script>
+{% endblock %}

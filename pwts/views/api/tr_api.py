@@ -4,7 +4,8 @@
 from flask import abort, jsonify, request, url_for
 from pwts.views.api.blueprint import blueprint
 from pwts.model.wts import TrackRec
-from pwts import db
+from pwts.model.cv import Priority, Size, Status, User
+from pwts import db, app
 
 # Routes
     
@@ -25,14 +26,11 @@ def create_tr():
     """
     create a new TR
     """
+    
     if not request.json or not 'title' in request.json:
         abort(400)
-    
-    # TODO (kstone): flesh out TR creation        
-    trackrec = TrackRec()
-    trackrec.title = request.json['title']
-    trackrec.key = db.session.query(db.func.max(TrackRec.key).label("max_key")) \
-        .one().max_key + 1
+        
+    trackrec = build_new_tr(request.json)
     db.session.add(trackrec)
     
     return render_tr_json(trackrec), 201
@@ -119,6 +117,38 @@ def render_tr_json(trackrec):
     
     
     return jsonify(response)
+
+
+def build_new_tr(data):
+    """
+    Create a new TR based on input data
+    """
+        
+    # TODO (kstone): flesh out TR creation        
+    trackrec = TrackRec()
+    trackrec.title = data['title']
+    trackrec.key = db.session.query(db.func.max(TrackRec.key).label("max_key")) \
+        .one().max_key + 1
+        
+        
+    if 'priority' in data and data['priority']:
+        trackrec.priority = Priority.query.filter_by(name=data['priority']).first()    
+    
+    if 'size' in data and data['size']:
+        trackrec.size = Size.query.filter_by(name=data['size']).first()
+        
+    if 'status' in data and data['status']:
+        trackrec.status = Status.query.filter_by(name=data['status']).first()
+        
+    app.logger.debug(data)
+    if 'requested_by' in data and data['requested_by']:
+        app.logger.debug("hello rqb = %s" % data['requested_by'])
+        trackrec.requested_by = User.query.filter(User.login.in_(data['requested_by'])).all()
+        
+    if 'assigned_user' in data and data['assigned_user']:
+        trackrec.assigned_users = User.query.filter(User.login.in_(data['assigned_user'])).all()
+        
+    return trackrec
     
     
 def fmt_date(datetime):

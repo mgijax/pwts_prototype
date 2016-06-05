@@ -99,8 +99,10 @@ class TrackRec(db.Model):
     title = db.Column(db.String())
     has_directory = db.Column(db.Boolean)
     attention_by = db.Column(db.DateTime())
-    creation_date = db.Column(db.DateTime())
-    modification_date = db.Column(db.DateTime())
+    creation_date = db.Column(db.DateTime(),
+                        default=db.func.now())
+    modification_date = db.Column(db.DateTime(),
+                        default=db.func.now())
     
     description = db.Column(db.String())
     progress_notes = db.Column(db.String())
