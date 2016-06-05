@@ -25,16 +25,15 @@ def create_tr():
     """
     create a new TR
     """
-    if not request.json or not 'tr_title' in request.json:
+    if not request.json or not 'title' in request.json:
         abort(400)
     
     # TODO (kstone): flesh out TR creation        
     trackrec = TrackRec()
-    trackrec.tr_title = request.json['tr_title']
+    trackrec.title = request.json['title']
     trackrec.key = db.session.query(db.func.max(TrackRec.key).label("max_key")) \
         .one().max_key + 1
     db.session.add(trackrec)
-    db.session.commit()
     
     return render_tr_json(trackrec), 201
     
@@ -51,8 +50,7 @@ def update_tr(key):
     if not request.json:
         abort(400)
         
-    trackrec.tr_title = request.json['tr_title']
-    db.session.commit()
+    trackrec.title = request.json['title']
 
     return render_tr_json(trackrec)
     
@@ -67,7 +65,6 @@ def delete_tr(key):
         return jsonify({"error":"No TR exists with number %d" % key}), 404
     
     db.session.delete(trackrec)
-    db.session.commit()
     
     return jsonify({'result': True})
     
@@ -80,7 +77,7 @@ def render_tr_json(trackrec):
     
     response = {
         "key": trackrec.key,
-        "title": trackrec.tr_title,
+        "title": trackrec.title,
         "priority_key": trackrec.priority_key,
         "priority": trackrec.priority and trackrec.priority.name or '',
         "size_key": trackrec.size_key,

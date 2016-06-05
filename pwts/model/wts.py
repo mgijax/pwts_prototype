@@ -96,7 +96,7 @@ class TrackRec(db.Model):
                          db.ForeignKey("cv_user.key"),
                          index=True)
     locked_date = db.Column(db.DateTime())
-    tr_title = db.Column(db.String())
+    title = db.Column(db.String())
     has_directory = db.Column(db.Boolean)
     attention_by = db.Column(db.DateTime())
     creation_date = db.Column(db.DateTime())

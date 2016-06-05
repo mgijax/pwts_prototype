@@ -110,6 +110,9 @@ def before_request():
     if 'user' not in session:
         session['user'] = ''
         
+    if app.config["NO_DB_COMMIT"]:
+        return
+
     # prevent any database session autoflush
     db.session.autoflush = False
     db.session.close()
@@ -121,9 +124,13 @@ def shutdown_session(exception=None):
     clean up db connection after requests
     """
     #db.session.rollback()
+    
+    if app.config["NO_DB_COMMIT"]:
+        return
+
+    db.session.commit()
     db.session.expunge_all()
     db.session.close()
-
 
 # import traceback
 # TODO (kstone): add 500 error handler

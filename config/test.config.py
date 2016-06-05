@@ -10,5 +10,8 @@ SQLALCHEMY_TRACK_MODIFICATIONS = True
 
 LOG_LEVEL = "ERROR"
 
+# Don't commit changes to database while testing
+NO_DB_COMMIT = True
+
 # remove password requirement for login
 DEV_LOGINS = True
