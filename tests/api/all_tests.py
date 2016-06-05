@@ -14,12 +14,14 @@ import unittest
 
 # import all sub test suites
 import tr_api_tests
+import tr_search_api_tests
 
 # add the test suites
 def master_suite():
 	suites = []
 	suites.append(tr_api_tests.suite())
-	
+	suites.append(tr_search_api_tests.suite())
+        
 	master_suite = unittest.TestSuite(suites)
 	return master_suite
 
