@@ -1,11 +1,11 @@
 """
 API for searching TRs by various fields
 """
-from flask import abort, jsonify, request, url_for
+from flask import jsonify, request, url_for
 from pwts.views.api.blueprint import blueprint
-from pwts.model.cv import Priority, Size, Status
+from pwts.model.cv import Priority, Size, Status, User
 from pwts.model.wts import TrackRec
-from pwts import app, db
+from pwts import db
 from pwts.forms.tr_search import TRSearchForm
 
 # Routes
@@ -18,7 +18,9 @@ def search_trs():
     
     search_form = TRSearchForm(request.args)
     
-    trackrecs = query_trackrecs(search_form)
+    trackrecs = []
+    if search_form.is_valid():
+        trackrecs = query_trackrecs(search_form)
 
     return render_results_json(trackrecs)
 
@@ -47,6 +49,48 @@ def query_trackrecs(search_form):
         statuses = search_form.status.data
         sub_query = gen_cv_subquery(statuses, Status)
         query = query.filter(sub_query.exists())
+        
+    if search_form.open.data:
+        # return only open TRs
+        # statuses not to return
+        values = ['done', 'merged', 'cancelled']
+        status_alias = db.aliased(Status)
+        tr_alias = db.aliased(TrackRec)
+        sub_query = db.session.query(tr_alias) \
+          .join(status_alias) \
+          .filter(~db.func.lower(status_alias.name).in_(values)) \
+          .filter(tr_alias.key == TrackRec.key) \
+          .correlate(TrackRec)
+        query = query.filter(sub_query.exists())
+        
+    if search_form.requested_by.data:
+        users = search_form.requested_by.data
+        users = [u.lower() for u in users]
+        
+        user_alias = db.aliased(User)
+        tr_alias = db.aliased(TrackRec)
+        
+        sub_query = db.session.query(tr_alias) \
+            .join(user_alias, tr_alias.requested_by) \
+            .filter(db.func.lower(user_alias.login).in_(users)) \
+            .filter(tr_alias.key == TrackRec.key) \
+            .correlate(TrackRec)
+        query = query.filter(sub_query.exists())
+        
+    if search_form.assigned_user.data:
+        users = search_form.assigned_user.data
+        users = [u.lower() for u in users]
+        
+        user_alias = db.aliased(User)
+        tr_alias = db.aliased(TrackRec)
+        
+        sub_query = db.session.query(tr_alias) \
+            .join(user_alias, tr_alias.assigned_users) \
+            .filter(db.func.lower(user_alias.login).in_(users)) \
+            .filter(tr_alias.key == TrackRec.key) \
+            .correlate(TrackRec)
+        query = query.filter(sub_query.exists())
+        
     
     if search_form.search_string.data:
         search = search_form.search_string.data.lower()

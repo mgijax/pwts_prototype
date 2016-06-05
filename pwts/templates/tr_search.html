@@ -7,9 +7,10 @@
     }
     form div {
     	margin-bottom: 10px;
+    	display: inline-block;
+    	vertical-align: top;
     }
     label {
-        min-width: 66px;
         font-weight: bold;
         display: inline-block;
     }
@@ -41,13 +42,27 @@
       <form id="searchForm">
         <div><input type="reset" value="Reset" /></div>
         
+        <br><hr>
+        
         <div>{{form.search_string.label}} {{form.search_string(size=50)}}</div>
         
-        <div>{{form.priority.label}} {{form.priority}}</div>
+        <br><hr>
         
-        <div>{{form.size.label}} {{form.size}}</div>
+        <div>{{form.priority.label}} {{form.priority(size=6)}}</div>
         
-        <div>{{form.status.label}} {{form.status}}</div>
+        <div>{{form.size.label}} {{form.size(size=6)}}</div>
+        
+        <div>{{form.status.label}} {{form.status(size=6)}}</div>
+        
+        <div>{{form.open.label}} {{form.open()}}</div>
+        
+        <br><hr>
+        
+        <div>{{form.requested_by.label}} {{form.requested_by(size=10)}}</div>
+        
+        <div>{{form.assigned_user.label}} {{form.assigned_user(size=10)}}</div>
+        
+        <br><hr>
         
         <div><input type="submit" value="Search TRs" /></div>
       </form>

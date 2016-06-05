@@ -1,6 +1,58 @@
 {% extends "standard.html" %}
+
+{% block header %}
+  <style>
+    li {
+      margin-top: 10px;
+    }
+  </style>
+{% endblock %}
+
 {% block content %}
   
-  Hello World
+  <h1>Prototype WTS w/ Web Services</h1>
+  
+  <ul>
+    <li>
+      <a href="{{ url_for('client.tr_search_page') }}">Query Tracking Records</a> - Advanced search form for querying TRs
+      <ol>
+        <li>
+          <a href="{{ url_for('client.tr_search_page') }}?status=new">New Tracking Record List</a> -
+            list tracking records with a Status of new
+        </li>
+        <li>
+          <a href="{{ url_for('client.tr_search_page') }}?assigned_user=kstone&open=True">My Assigned Records</a> -
+            list current tracking records for which the current user is listed as a staff member
+        </li>
+        <li>
+          <a href="{{ url_for('client.tr_search_page') }}?requested_by=kstone&open=True">My Requests</a> -
+            list current tracking records for which the current user is listed in the Requested By field
+        </li>
+        <li>
+          <form id="trForm">
+          Find TR#: <input id="trNum" type="text" size="10"/> <input type="submit" value="retrieve" />
+          </form>
+        </li>
+      </ol>
+    </li>
+  </ul>
+  
+  <script>
+    (function(){
+    	
+      var trDetailUrl = "{{ url_for('client.tr_detail', key=0) }}";
+      trDetailUrl = trDetailUrl.substring(0, trDetailUrl.length - 1);
+      
+      // capture 'Find TR#' submit
+      $('#trForm').submit(function(e){
+    	e.preventDefault();
+    	
+    	var trNum = $('#trNum').val();
+    	window.location = trDetailUrl + trNum;
+    	
+    	return false;
+      });
+    })();
+  </script>
 
 {% endblock %}

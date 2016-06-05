@@ -11,7 +11,7 @@ from tests import test_config
 
 import unittest
 from pwts import app, db
-from pwts.model import Priority, Size, Status, TrackRec
+from pwts.model import Priority, Size, Status, TrackRec, User
 
 
 tc = app.test_client()
@@ -151,6 +151,43 @@ class TRSearchApiTest(unittest.TestCase):
         self.assertEqual(trackrecs[1]['key'], tr2.key)
         
         
+    def test_search_requested_by(self):
+            
+        # add a fake TR to test
+        tr1 = self.add_mock_tr()
+        user = self.add_mock_user()
+        tr1.requested_by = [user]
+        user.login = 'testuser'
+            
+        # search TRs by status
+        r = tc.get('/api/tr/search?requested_by=testUser',
+        )
+        
+        response = json.loads(r.data)
+        trackrecs = response['trackrecs']
+        # verify only t1 came back
+        self.assertEqual(len(trackrecs), 1)
+        self.assertEqual(trackrecs[0]['key'], tr1.key)
+        
+    def test_search_assigned_user(self):
+            
+        # add a fake TR to test
+        tr1 = self.add_mock_tr()
+        user = self.add_mock_user()
+        tr1.assigned_users = [user]
+        user.login = 'testuser'
+            
+        # search TRs by status
+        r = tc.get('/api/tr/search?assigned_user=testUser',
+        )
+        
+        response = json.loads(r.data)
+        trackrecs = response['trackrecs']
+        # verify only t1 came back
+        self.assertEqual(len(trackrecs), 1)
+        self.assertEqual(trackrecs[0]['key'], tr1.key)
+        
+        
     # Helpers
     def add_mock_tr(self):
         """
@@ -163,6 +200,16 @@ class TRSearchApiTest(unittest.TestCase):
         db.session.add(trackrec)
         
         return trackrec
+
+    def add_mock_user(self):
+        """
+        Insert a test User into db session
+        """
+        user = User()
+        user.key = db.session.query(db.func.max(User.key).label("max_key")) \
+                .one().max_key + 1
+        db.session.add(user)
+        return user
 
     def add_mock_vocab(self, name, cvClass):
         """
