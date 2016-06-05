@@ -90,6 +90,8 @@ def render_results_json(trackrecs):
     
     response_objects = []
     for trackrec in trackrecs:
+            
+        url = url_for('client.tr_detail', key=trackrec.key)
                 
         response_objects.append({
             "key": trackrec.key,
@@ -106,6 +108,7 @@ def render_results_json(trackrecs):
         
             "creation_date": fmt_date(trackrec.creation_date),
             "modification_date": fmt_date(trackrec.modification_date),
+            "url": url
         })
     
     response = {

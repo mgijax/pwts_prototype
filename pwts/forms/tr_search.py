@@ -7,7 +7,7 @@ from wtforms.widgets import *
 
 class TRSearchForm(Form):
 
-        search_string = TextField('TR Title')
+        search_string = TextField('TR Title / Description')
         priority = SelectMultipleField('Priority')
         size = SelectMultipleField('Size')
         status = SelectMultipleField('Status')

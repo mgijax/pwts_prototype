@@ -1,0 +1,97 @@
+{% extends "standard.html" %}
+
+{% block header %}
+  <style>
+    input, label {
+    	vertical-align: top;
+    }
+    form div {
+    	margin-bottom: 10px;
+    }
+    label {
+        min-width: 66px;
+        font-weight: bold;
+        display: inline-block;
+    }
+    label::after {
+        content: ":";
+        vertical-align: top;
+    }
+    
+    input[type="submit"], input[type="reset"] {
+    	font-size: 20px;
+    }
+    table, th {
+        border: 1px solid black;
+        border-collapse: collapse;
+    }
+    td {
+        padding: 2px;
+    }
+    tr:nth-child(even) {
+        background-color: #efefef;
+    }
+  </style>
+{% endblock %}
+
+{% block content %}
+
+    <section>
+      <h2>TR Search Form</h2>
+      <form id="searchForm">
+        <div><input type="reset" value="Reset" /></div>
+        
+        <div>{{form.search_string.label}} {{form.search_string(size=50)}}</div>
+        
+        <div>{{form.priority.label}} {{form.priority}}</div>
+        
+        <div>{{form.size.label}} {{form.size}}</div>
+        
+        <div>{{form.status.label}} {{form.status}}</div>
+        
+        <div><input type="submit" value="Search TRs" /></div>
+      </form>
+    </section>
+
+	<section id="results">
+	</section>
+	
+	<!-- template to be inserted into results -->
+	<script id="resultsTemplate" type="x-tmpl-mustache">
+    {% raw %}
+	  <h2>Results</h2>
+      <table>
+      <tr>
+        <th>TR</th>
+        <th>Title</th>
+        <th>Priority</th>
+        <th>Size</th>
+        <th>Status</th>
+      <tr>
+      {{#trackrecs}}
+        <tr>
+          <td><a href="{{url}}">TR{{key}}</a></td>
+ 		  <td>{{title}}</td>
+          <td>{{priority}}</td>
+          <td>{{size}}</td>
+          <td>{{status}}</td>
+        </tr>
+      {{/trackrecs}}
+      {{^trackrecs.length}}
+         <tr><td colspan=5>No TRs found</td></tr>
+      {{/trackrecs.length}}
+      </table>
+    {% endraw %}
+	</script>
+	
+	<!-- Set up for javascript -->
+	<script>
+	
+	  // url for REST calls
+	  window.TR_SEARCH_URL = "{{ url_for('api.search_trs') }}";
+	
+	</script>
+	
+	
+	<script src="{{ url_for('static',filename='js/tr_search.js') }}"></script>
+{% endblock %}
