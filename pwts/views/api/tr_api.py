@@ -1,7 +1,7 @@
 """
     REST API for TrackRec objects
 """
-from flask import abort, jsonify, request
+from flask import abort, jsonify, request, url_for
 from pwts.views.api.blueprint import blueprint
 from pwts.model.wts import TrackRec
 from pwts import db
@@ -75,6 +75,20 @@ def render_tr_json(trackrec):
     build json response
     """
     
+    child_trs = []
+    for child_tr in trackrec.child_trs:
+        child_trs.append({
+            "key": child_tr.key,
+            "url": url_for('client.tr_detail', key=child_tr.key)
+        })
+        
+    requested_by = [user.login for user in trackrec.requested_by]
+    requested_by.sort()
+
+    assigned_users = [user.login for user in trackrec.assigned_users]
+    assigned_users.sort()
+    
+    
     response = {
         "key": trackrec.key,
         "title": trackrec.title,
@@ -95,7 +109,11 @@ def render_tr_json(trackrec):
         "creation_date": fmt_date(trackrec.creation_date),
         "modification_date": fmt_date(trackrec.modification_date),
         
-        "child_trs": ",".join([str(x.key) for x in trackrec.child_trs])
+        "areas": [area.name for area in trackrec.areas],
+        "requested_by": requested_by,
+        "assigned_users": assigned_users,
+        
+        "child_trs": child_trs
     }
     
     
@@ -107,4 +125,4 @@ def fmt_date(datetime):
     """
     display datetime in json
     """
-    return datetime and str(datetime) or None
+    return datetime and datetime.strftime("%Y-%m-%d %H:%M:%S") or None

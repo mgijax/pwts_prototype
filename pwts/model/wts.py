@@ -124,10 +124,10 @@ class TrackRec(db.Model):
                             secondary=TRTypeAssoc.__table__,
                             backref="trs")
     
-    assignedUsers = db.relationship("User",
+    assigned_users = db.relationship("User",
                                     secondary=TRAssignedUserAssoc.__table__)
     
-    requestedBy = db.relationship("User",
+    requested_by = db.relationship("User",
                                   secondary=TRRequestedUserAssoc.__table__)
     
     statusChanges = db.relationship("StatusHistory")

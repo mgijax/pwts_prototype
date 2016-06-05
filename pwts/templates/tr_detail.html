@@ -13,28 +13,56 @@
 
 {% block content %}
 
-	<h1>Viewing TR{{key}}</h1>
+	<section id="content">
+		Loading TR details...
+	</section>
 	
-	<div id="target">Loading TR Details...</div>
+	<!-- template to be inserted into content -->
+	<script id="trTemplate" type="x-tmpl-mustache">
+    {% raw %}
+	  <h2>TR{{key}} - {{title}}</h2>
+	  
+	  <span><strong>Created:</strong> <span>{{creation_date}}</span></span>
+	  <br>
+	  <span><strong>Last Modified:</strong> <span>{{modification_date}}</span></span>
+	  <br>
+	  <span><strong>Priority:</strong> <span>{{priority}}</span></span>
+	  <br>
+	  <span><strong>Size:</strong> <span>{{size}}</span></span>
+	  <br>
+	  <span><strong>Status:</strong> <span>{{status}}</span></span>
+	  <br>
+	  <span><strong>Requested By:</strong> <span>{{requested_by}}</span></span>
+      <br>
+	  <span><strong>Assigned To:</strong> <span>{{assigned_users}}</span></span>
+      <br><br>
+	  <span><strong>Child TRs:</strong> 
+        <span>
+        {{#child_trs}}
+          <a href="{{url}}">TR{{key}}</a>
+        {{/child_trs}}
+        </span>
+      </span>
+
+	  <h3>Description</h3>
+	  <section>
+	    <pre>{{{description}}}</pre>
+	  </section>
 	
+	  <h3>Progress Notes</h3>
+	  <section>
+	    <pre>{{{progress_notes}}}</pre>
+	  </section>
+    {% endraw %}
+	</script>
+	
+	<!-- Set up for javascript -->
 	<script>
 	
-	// DEBUG TR Details
-	
-	$.ajax({
-		dataType: "json",
-		url: "{{ url_for('api.get_tr', key=key) }}"
-	}).done(function(response){
-		$("#target").text("");
-		var ul = $("<ul>").appendTo("#target");
-		
-		$.each(response, function(k, v){
-			 ul.append('<li><strong>'+k+'</strong> = <pre>'+v+'</pre></li>');
-		});
-		console.log(response);
-	}).fail(function(err){
-		$("#target").text(err);
-	});
+	  // url for REST calls
+	  window.TR_URL = "{{ url_for('api.get_tr', key=key) }}";
 	
 	</script>
+	
+	<script src="{{ url_for('static',filename='js/tr_detail.js') }}"></script>
 {% endblock %}
