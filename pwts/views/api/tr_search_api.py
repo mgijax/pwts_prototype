@@ -1,10 +1,6 @@
 """
 API for searching TRs by various fields
 """
-
-"""
-    REST API for TrackRec objects
-"""
 from flask import abort, jsonify, request, url_for
 from pwts.views.api.blueprint import blueprint
 from pwts.model.cv import Priority, Size, Status
@@ -39,34 +35,34 @@ def query_trackrecs(search_form):
     
     if search_form.priority.data:
         priorities = search_form.priority.data
-        sq = gen_cv_subquery(priorities, Priority)
-        query = query.filter(sq.exists())
+        sub_query = gen_cv_subquery(priorities, Priority)
+        query = query.filter(sub_query.exists())
         
     if search_form.size.data:
         sizes = search_form.size.data
-        sq = gen_cv_subquery(sizes, Size)
-        query = query.filter(sq.exists())
+        sub_query = gen_cv_subquery(sizes, Size)
+        query = query.filter(sub_query.exists())
     
     if search_form.status.data:
         statuses = search_form.status.data
-        sq = gen_cv_subquery(statuses, Status)
-        query = query.filter(sq.exists())
+        sub_query = gen_cv_subquery(statuses, Status)
+        query = query.filter(sub_query.exists())
     
     if search_form.search_string.data:
         search = search_form.search_string.data.lower()
         search = "%" + search + "%"
-        q1 = query.filter(db.func.lower(TrackRec.title).like(search))
-        q2 = query.filter(db.func.lower(TrackRec.description).like(search))
+        query_part1 = query.filter(db.func.lower(TrackRec.title).like(search))
+        query_part2 = query.filter(db.func.lower(TrackRec.description).like(search))
         
-        query = q1.union(q2)
+        query = query_part1.union(query_part2)
         
     query = query.order_by(TrackRec.key)
     return query.all()
 
 
-def gen_cv_subquery(values, cvClass):
+def gen_cv_subquery(values, cv_class):
     """
-    Generate a subquery for a controlled vocab table (cvClass)
+    Generate a subquery for a controlled vocab table (cv_class)
         to be used in exists clause
         
     all values are search case-insensitive
@@ -74,14 +70,14 @@ def gen_cv_subquery(values, cvClass):
         (which provides name column)
     """
     values = [v.lower() for v in values]
-    cv_alias = db.aliased(cvClass)
+    cv_alias = db.aliased(cv_class)
     tr_alias = db.aliased(TrackRec)
-    sq = db.session.query(tr_alias) \
+    sub_query = db.session.query(tr_alias) \
         .join(cv_alias) \
         .filter(db.func.lower(cv_alias.name).in_(values)) \
-        .filter(tr_alias.key==TrackRec.key) \
+        .filter(tr_alias.key == TrackRec.key) \
         .correlate(TrackRec)
-    return sq
+    return sub_query
 
 def render_results_json(trackrecs):
     """

@@ -14,28 +14,28 @@ def tr_search_page():
     """
     TR search HTML page
     """
-    searchForm = TRSearchForm(request.args)
+    search_form = TRSearchForm(request.args)
     
     
     # TODO (kstone): Loading search form options via API
-    searchForm.priority.choices = gen_vocab_choices(Priority)
-    searchForm.size.choices = gen_vocab_choices(Size)
-    searchForm.status.choices = gen_vocab_choices(Status)
+    search_form.priority.choices = gen_vocab_choices(Priority)
+    search_form.size.choices = gen_vocab_choices(Size)
+    search_form.status.choices = gen_vocab_choices(Status)
     
     return render_template("tr_search.html",
         title="TR Search",
-        form=searchForm
+        form=search_form
     )
     
     
 # Helpers
-def gen_vocab_choices(cvClass):
+def gen_vocab_choices(cv_class):
     """
-    Generate option choices for controlled vocab class (cvClass)
+    Generate option choices for controlled vocab class (cv_class)
     
     only return active terms
     """
-    values = cvClass.query \
+    values = cv_class.query \
         .filter_by(active=True) \
         .all()
     choices = [(x.name, x.name) for x in values]
