@@ -234,15 +234,15 @@ def migrate_trackrecords(sourceCur, targCur, _tr_key=None):
         for row in sourceCur.fetchall():
                 row = list(row)
                 # title
-                row[8] = row[8].decode('iso-8859-1')
+                row[8] = row[8].decode('iso-8859-1').encode('utf-8')
                 
                 # convert directory variable to flag
                 row[9] = bool(row[9]) 
                 # description and progress notes blocks
                 if row[13]:
-                        row[13] = row[13].decode('iso-8859-1')
+                        row[13] = row[13].decode('iso-8859-1').encode('utf-8')
                 if row[14]:
-                        row[14] = row[14].decode('iso-8859-1')
+                        row[14] = row[14].decode('iso-8859-1').encode('utf-8')
                 rows.append(row)
         
         loadRecords(rows, "wts_trackrec", targCur)
