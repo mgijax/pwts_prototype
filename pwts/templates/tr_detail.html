@@ -2,7 +2,7 @@
 
 {% block header %}
   <style>
-    pre {
+    .htmlSection {
     	background-color: #efefef;
     	display: inline-block;
     	margin-top: 0px;
@@ -45,13 +45,13 @@
       </span>
 
 	  <h3>Description</h3>
-	  <section>
-	    <pre>{{{description}}}</pre>
+	  <section class="htmlSection">
+	    {{{description}}}
 	  </section>
 	
 	  <h3>Progress Notes</h3>
-	  <section>
-	    <pre>{{{progress_notes}}}</pre>
+	  <section class="htmlSection">
+	    {{{progress_notes}}}
 	  </section>
     {% endraw %}
 	</script>

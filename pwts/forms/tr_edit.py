@@ -3,7 +3,8 @@
 """
 # pylint: disable=too-few-public-methods
 from wtforms.form import Form
-from wtforms.fields import BooleanField, HiddenField, TextField, SelectField, SelectMultipleField
+from wtforms.fields import BooleanField, HiddenField, TextField, \
+    SelectField, SelectMultipleField, TextAreaField
 
 class TREditForm(Form):
     """
@@ -11,6 +12,9 @@ class TREditForm(Form):
     """
     
     title = TextField('Title')
+    description = TextAreaField('Description')
+    progress_notes = TextAreaField('Progress Notes')
+    
     priority = SelectField('Priority')
     size = SelectField('Size')
     status = SelectField('Status')

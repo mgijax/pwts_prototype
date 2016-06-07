@@ -30,7 +30,8 @@ def create_tr():
     if not request.json or not 'title' in request.json:
         abort(400)
         
-    trackrec = build_new_tr(request.json)
+    trackrec = build_new_tr()
+    edit_tr(trackrec, request.json)
     db.session.add(trackrec)
     
     return render_tr_json(trackrec), 201
@@ -119,18 +120,30 @@ def render_tr_json(trackrec):
     return jsonify(response)
 
 
-def build_new_tr(data):
+def build_new_tr():
     """
-    Create a new TR based on input data
+    Create a new TR
     """
-        
-    # TODO (kstone): flesh out TR creation        
+         
     trackrec = TrackRec()
-    trackrec.title = data['title']
     trackrec.key = db.session.query(db.func.max(TrackRec.key).label("max_key")) \
         .one().max_key + 1
         
+    return trackrec
+
+def edit_tr(trackrec, data):
+    """
+    Set TR with values from data
+    """
+    
+    trackrec.title = data['title']
+    
+    if 'description' in data and data['description']:
+        trackrec.description = data['description']
         
+    if 'progress_notes' in data and data['progress_notes']:
+        trackrec.progress_notes = data['progress_notes']
+    
     if 'priority' in data and data['priority']:
         trackrec.priority = Priority.query.filter_by(name=data['priority']).first()    
     
@@ -140,7 +153,6 @@ def build_new_tr(data):
     if 'status' in data and data['status']:
         trackrec.status = Status.query.filter_by(name=data['status']).first()
         
-    app.logger.debug(data)
     if 'requested_by' in data and data['requested_by']:
         app.logger.debug("hello rqb = %s" % data['requested_by'])
         trackrec.requested_by = User.query.filter(User.login.in_(data['requested_by'])).all()
@@ -148,8 +160,6 @@ def build_new_tr(data):
     if 'assigned_user' in data and data['assigned_user']:
         trackrec.assigned_users = User.query.filter(User.login.in_(data['assigned_user'])).all()
         
-    return trackrec
-    
     
 def fmt_date(datetime):
     """

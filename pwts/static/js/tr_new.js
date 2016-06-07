@@ -68,4 +68,18 @@ $("#trForm").submit(function(e){
 	return false;
 });
 
+$(function(){
+	
+	// initialize ckeditors
+	CKEDITOR.replace( 'description' );
+	CKEDITOR.replace( 'progressNotes' );
+	
+	// Set ckeditor to populate associated textarea on change
+	for (var i in CKEDITOR.instances) {  
+      CKEDITOR.instances[i].on('change', function() { 
+    	  this.updateElement() 
+      });
+	}
+});
+
 })();
